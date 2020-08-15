@@ -1,0 +1,116 @@
+name: 'tuplip push'
+author: 'matfax'
+branding:
+  icon: 'tag'
+  color: 'blue'
+description: 'apply and verify Docker tags in a transparent and convention-forming way'
+inputs:
+  buildOnly:
+    description: |
+      This lets tuplip use the `build` command instead of the `push` command.
+      It's very useful for testing workflows that aren't supposed to push anything to Docker (e.g., for pull requests).
+      Set it to any non-zero value to enable the flag (e.g. `true`).
+    required: false
+    default: ''
+  repository:
+    description: |
+      This defines the public repository path on which the images are to be pushed.
+      By default, the same repistory org and name will be used as the repository on that this action is executed.
+      That is, $GITHUB_REPOSITORY.
+      However, if an `ARG REPOSITORY=` is defined in the Dockerfile, this Docker argument will override this input.
+    required: false
+    default: '$GITHUB_REPOSITORY'
+  path:
+    description: |
+      This defines the path to the Dockerfile without the name of the Dockerfile itself.
+    required: false
+    default: '.'
+  dockerfile:
+    description: |
+      This only defines the name of the Dockerfile without its path.
+    required: false
+    default: 'Dockerfile'
+  username:
+    description: |
+      IMPORTANT: Only use secrets to pass credentials to the action (e.g., secrets.DOCKER_USR)!
+      If this input is given, a docker login will be attempted before pushing the tagged images.
+      If not given, the login will be skipped. The workflow has to perform the docker login before this action then.
+    required: false
+    default: ''
+  password:
+    description: |
+      IMPORTANT: Only use secrets to pass credentials to the action (e.g., secrets.DOCKER_PWD)!
+      If inputs.username is given, the password (or token) also has to be defined.
+    required: false
+    default: ''
+  excludeMajor:
+    description: |
+      This adds the `--exclude-major` flag to the push command.
+      `--exclude-major` excludes the major versions (e.g., go1 for go:1.2.3) from the considered version variants.
+      Set it to any non-zero value to enable the flag (e.g. `true`).
+    required: false
+    default: ''
+  excludeMinor:
+    description: |
+      This adds the `--exclude-minor` flag to the push command.
+      `--exclude-minor` excludes the minor versions (e.g., go1.2 for go:1.2.3) from the considered version variants.
+      Set it to any non-zero value to enable the flag (e.g. `true`).
+    required: false
+    default: ''
+  excludeBase:
+    description: |
+      This adds the `--exclude-base` flag to the push command.
+      `--exclude-base` excludes the base alias (e.g., go for go:1.2.3) from the considered variants.
+      Set it to any non-zero value to enable the flag (e.g. `true`).
+    required: false
+    default: ''
+  addLatest:
+    description: |
+      This adds the `--add-latest` flag to the push command.
+      `--add-latest` not only pushes the determined tags from the tag vectors but also the `latest` tag.
+      Set it to any non-zero value to enable the flag (e.g. `true`).
+    required: false
+    default: ''
+  exclusiveLatest:
+    description: |
+      This adds the `--exclusive-latest` flag to the push command.
+      `--exclusive-latest` makes the `latest` root tag vector version an exclusive tag if given.
+      This is especially useful for automated builds (e.g., Docker Hub builds) where the root tag vector version is
+      passed from the build system.
+      In other words, this means that only `latest` will be pushed once `latest` is given as root tag but nothing else,
+      so that `latest` builds can remain separated from release builds.
+      Set it to any non-zero value to enable the flag (e.g. `true`).
+    required: false
+    default: ''
+  rootVersion:
+    description: |
+      This adds the `--root-version` flag to the push command.
+      `--root-version` overrides the root tag vector's version of the given Dockerfile.
+      Set it to any non-zero value to enable the flag (e.g. `1.0.0`).
+    required: false
+    default: ''
+  straight:
+    description: |
+      This adds the `--straight` flag to the push command.
+      `--straight` lets tuplip use the input tags directly without any mixing.
+      Only single-itemed tags will be pushed.
+      This flag will be ignored if inputs.buildOnly is enabled.
+      Set it to any non-zero value to enable the flag (e.g. `true`).
+    required: false
+    default: ''
+  filter:
+    description: |
+      This adds the `--filter` flag to the push command.
+      `--filter` excludes all tags without the given set of tag vectors from the output set.
+      Only tags will be pushed that represent supersets of the given tags.
+      Set it to a comma-separated list of tags (e.g. `one,two`).
+      Do not use spaces between the given tags (e.g., `one, two`).
+      Spacings will break the shell processing.
+    required: false
+    default: ''
+outputs:
+  tags:
+    description: 'the list of pushed tags'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
