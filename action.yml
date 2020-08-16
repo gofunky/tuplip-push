@@ -5,6 +5,15 @@ branding:
   color: 'blue'
 description: 'apply and verify Docker tags in a transparent and convention-forming way'
 inputs:
+  sourceTag:
+    description: |
+      You can pass your own source tag for an existing local image.
+      Then, this action will not execute `docker build` before pushing and assume that your workflow has ensured
+      that the given tag exists locally, ready to be pushed.
+      This is useful if the docker image needs to be build with advanced parameters,
+      or if the image exists already somewhere and only needs to be pulled, ready to be redistributed.
+      If no source tag is set, this action will perform the building itself, using the name of the workflow.
+      Set it to any non-zero value to enable the flag (e.g., `build-tag`).
   buildOnly:
     description: |
       This lets tuplip use the `build` command instead of the `push` command.
