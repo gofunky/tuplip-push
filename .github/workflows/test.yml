@@ -27,6 +27,6 @@ jobs:
           rootVersion: 'latest'
           repository: 'gofunky/ignore'
           path: './test'
-          Dockerfile: 'WithRepository.Dockerfile'
+          dockerfile: 'WithRepository.Dockerfile'
           username: ${{ secrets.DOCKER_USR }}
           password: ${{ secrets.DOCKER_PWD }}
