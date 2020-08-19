@@ -21,7 +21,7 @@ jobs:
           key: tuplip-internal-layers-${{ github.workflow }}-${{ github.job }}-
           restore-keys: tuplip-dockere-layers-${{ github.workflow }}-
       - name: build and push latest docker image
-        uses: gofunky/tuplip-push@$master
+        uses: gofunky/tuplip-push@master
         with:
           cacheFile: 'cache.tar'
           rootVersion: 'latest'
