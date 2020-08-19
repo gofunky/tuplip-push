@@ -96,7 +96,7 @@ TAGS=$(
   $STRAIGHT ${VERSION:+--root-version "$VERSION"} ${FILTER:+--filter "$FILTER"}
 )
 
-echo "::set-output tags:: $TAGS"
+echo "::set-output name=tags:: $TAGS"
 
 # This is supposed to prevent accidental caching of a Docker image with a valid login
 echo "Logging out of Docker registry..."
