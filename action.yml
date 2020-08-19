@@ -4,14 +4,7 @@ branding:
   icon: 'tag'
   color: 'blue'
 description: |
-  This action not only builds and pushes Docker images to the Docker Hub.
-  Unlike the default `docker push`, it uses tuplip to apply Docker tags in a transparent and convention-forming way.
-  In other words, tuplip creates a complete set of tags that project all dependencies (e.g. the alpine version)
-  and their versions into the implicit tagging convention that is widely adopted today.
-  This is crucial for a reliable and transparent modeling of the security state of an image
-  so that insecure dependencies can be detected from day zero, given any image that includes the appropriate tags.
-  Most Docker images only include few dependencies in their tags or don't even provide regular updates.
-  Tuplip makes this detectable for all included dependencies and for any subset of dependencies that come to use.
+  tuplip not only builds Docker images, but also tags and pushes a complete superset of dependency and their versions.
 inputs:
   sourceTag:
     description: |
