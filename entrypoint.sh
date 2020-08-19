@@ -104,5 +104,5 @@ docker logout
 
 if [ -n "$INPUT_CACHEFILE" ]; then
   echo "Storing internal Docker layer cache..."
-  docker save -o "$INPUT_CACHEFILE"
+  docker save -o "$INPUT_CACHEFILE" "$SOURCE"
 fi
