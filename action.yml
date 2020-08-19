@@ -6,12 +6,12 @@ branding:
 description: |
   This action not only builds and pushes Docker images to the Docker Hub.
   Unlike the default `docker push`, it uses tuplip to apply Docker tags in a transparent and convention-forming way.
-  In other words, tuplip creates a complete set of tags that projects all dependencies (e.g. the alpine version)
+  In other words, tuplip creates a complete set of tags that project all dependencies (e.g. the alpine version)
   and their versions into the implicit tagging convention that is widely adopted today.
   This is crucial for a reliable and transparent modeling of the security state of an image
   so that insecure dependencies can be detected from day zero, given any image that includes the appropriate tags.
   Most Docker images only include few dependencies in their tags or don't even provide regular updates.
-  Tuplip makes this detectable for all included dependencies and for any subset of dependencies that comes to use.
+  Tuplip makes this detectable for all included dependencies and for any subset of dependencies that come to use.
 inputs:
   sourceTag:
     description: |
@@ -28,7 +28,7 @@ inputs:
     description: |
       This lets tuplip use the `build` command instead of the `push` command.
       It's very useful for testing workflows that aren't supposed to push anything to Docker (e.g., for pull requests).
-      Set it to any non-zero value to enable the flag (e.g. `true`).
+      Set it to any non-zero value to enable the flag (e.g. `true`), `false` also counts as true.
     required: false
     default: ''
   buildArgs:
@@ -47,10 +47,10 @@ inputs:
     description: |
       This defines the public repository path on which the images are to be pushed.
       By default, the same repistory org and name will be used as the repository on that this action is executed.
-      That is, $GITHUB_REPOSITORY.
-      However, if an `ARG REPOSITORY=` is defined in the Dockerfile, this Docker argument will override this input.
+      This will match if `github.com/gofunky/ignore` pushes on `hub.docker.com/r/gofunky/ignore`, for instance.
+      However, if an `ARG REPOSITORY=` is defined in the Dockerfile, the Docker argument will override this input.
     required: false
-    default: '$GITHUB_REPOSITORY'
+    default: ${{ github.repository }}
   path:
     description: |
       This defines the path to the Dockerfile without the name of the Dockerfile itself.
@@ -87,28 +87,28 @@ inputs:
     description: |
       This adds the `--exclude-major` flag to the push command.
       `--exclude-major` excludes the major versions (e.g., go1 for go:1.2.3) from the considered version variants.
-      Set it to any non-zero value to enable the flag (e.g. `true`).
+      Set it to any non-zero value to enable the flag (e.g. `true`), `false` also counts as true.
     required: false
     default: ''
   excludeMinor:
     description: |
       This adds the `--exclude-minor` flag to the push command.
       `--exclude-minor` excludes the minor versions (e.g., go1.2 for go:1.2.3) from the considered version variants.
-      Set it to any non-zero value to enable the flag (e.g. `true`).
+      Set it to any non-zero value to enable the flag (e.g. `true`), `false` also counts as true.
     required: false
     default: ''
   excludeBase:
     description: |
       This adds the `--exclude-base` flag to the push command.
       `--exclude-base` excludes the base alias (e.g., go for go:1.2.3) from the considered variants.
-      Set it to any non-zero value to enable the flag (e.g. `true`).
+      Set it to any non-zero value to enable the flag (e.g. `true`), `false` also counts as true.
     required: false
     default: ''
   addLatest:
     description: |
       This adds the `--add-latest` flag to the push command.
       `--add-latest` not only pushes the determined tags from the tag vectors but also the `latest` tag.
-      Set it to any non-zero value to enable the flag (e.g. `true`).
+      Set it to any non-zero value to enable the flag (e.g. `true`), `false` also counts as true.
     required: false
     default: ''
   exclusiveLatest:
@@ -119,7 +119,7 @@ inputs:
       passed from the build system.
       In other words, this means that only `latest` will be pushed once `latest` is given as root tag but nothing else,
       so that `latest` builds can remain separated from release builds.
-      Set it to any non-zero value to enable the flag (e.g. `true`).
+      Set it to any non-zero value to enable the flag (e.g. `true`), `false` also counts as true.
     required: false
     default: ''
   rootVersion:
@@ -135,7 +135,7 @@ inputs:
       `--straight` lets tuplip use the input tags directly without any mixing.
       Only single-itemed tags will be pushed.
       This flag will be ignored if inputs.buildOnly is enabled.
-      Set it to any non-zero value to enable the flag (e.g. `true`).
+      Set it to any non-zero value to enable the flag (e.g. `true`), `false` also counts as true.
     required: false
     default: ''
   filter:

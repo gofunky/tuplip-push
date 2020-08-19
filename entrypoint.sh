@@ -29,7 +29,7 @@ if [ -n "$INPUT_CACHEFILE" ]; then
   if [ -f "$INPUT_CACHEFILE" ]; then
     docker load -i "$INPUT_CACHEFILE"
   else
-    echo "SKIP: The layer cache doesn't exist yet."
+    echo "::warning SKIP: The layer cache doesn't exist yet."
   fi
 fi
 
@@ -62,11 +62,11 @@ else
 
   if [ -n "$INPUT_USERNAME" ]; then
     if [ -z "$INPUT_PASSWORD" ]; then
-      echo "ERROR: Input 'password' is not set even though 'username' is!"
+      echo "::error Input 'password' is not set even though 'username' is!"
       exit 127
     fi
 
-    echo "Logging into Docker Hub..."
+    echo "Logging into Docker registry..."
     docker login -u "$INPUT_USERNAME" -p "$INPUT_PASSWORD"
   fi
 
