@@ -61,7 +61,7 @@ else
     fi
 
     echo "Logging into Docker registry..."
-    docker login -u "$INPUT_USERNAME" -p "$INPUT_PASSWORD"
+    echo "$INPUT_PASSWORD" | docker login -u "$INPUT_USERNAME" --password-stdin
   fi
 
   if [ -n "$INPUT_STRAIGHT" ]; then
