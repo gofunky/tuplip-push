@@ -1,3 +1,5 @@
+#!/bin/sh
+
 export TAGS=""
 export REPOSITORY=""
 export BUILD_PUSH="push"
