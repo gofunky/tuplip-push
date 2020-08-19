@@ -12,7 +12,7 @@ jobs:
       - name: cache Docker layers
         uses: satackey/action-docker-layer-caching@v0.0.8
         with:
-          key: tuplip-dockere-layers-${{ github.workflow }}-${{ hashFiles(**/WithRepository.Dockerfile) }}
+          key: docker-layers-${{ github.workflow }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
       - name: build and push latest docker image
         uses: gofunky/tuplip-push@master
         with:
