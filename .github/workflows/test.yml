@@ -1,0 +1,32 @@
+name: test
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  test1:
+    name: build and push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.2
+      - name: cache Docker layers
+        uses: satackey/action-docker-layer-caching@v0.0.8
+        with:
+          key: tuplip-dockere-layers-${{ github.workflow }}-${{ github.job }}-
+          restore-keys: tuplip-dockere-layers-${{ github.workflow }}-
+      - name: cache internal layers
+        uses: actions/cache@v2.1.1
+        with:
+          path: 'cache.tar'
+          key: tuplip-internal-layers-${{ github.workflow }}-${{ github.job }}-
+          restore-keys: tuplip-dockere-layers-${{ github.workflow }}-
+      - name: build and push latest docker image
+        uses: gofunky/tuplip-push@$master
+        with:
+          cacheFile: 'cache.tar'
+          rootVersion: 'latest'
+          repository: 'gofunky/ignore'
+          path: './test'
+          Dockerfile: 'WithRepository.Dockerfile'
+          username: ${{ secrets.DOCKER_USR }}
+          password: ${{ secrets.DOCKER_PWD }}
