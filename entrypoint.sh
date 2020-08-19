@@ -86,6 +86,10 @@ TAGS=$(
 
 echo "::set-output tags:: $TAGS"
 
+# This is supposed to prevent accidental caching of a Docker image with a valid login
+echo "Logging out of Docker registry..."
+docker logout
+
 if [ -n "$INPUT_CACHEFILE" ]; then
   echo "Storing internal Docker layer cache..."
   docker save -o "$INPUT_CACHEFILE"
