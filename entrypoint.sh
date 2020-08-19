@@ -83,8 +83,10 @@ else
   fi
 
   echo "Executing docker build..."
-  docker build -t "$SOURCE" -f "$INPUT_DOCKERFILE" ${VERSION:+--build-arg VERSION }\
-  ${REPOSITORY:+--build-arg "$REPOSITORY" }$ARGS "$INPUT_PATH"
+  echo "docker build -t $SOURCE -f $INPUT_DOCKERFILE ${VERSION:+--build-arg VERSION} \
+  ${REPOSITORY:+--build-arg "$REPOSITORY"} $ARGS $INPUT_PATH"
+  docker build -t "$SOURCE" -f "$INPUT_DOCKERFILE" ${VERSION:+--build-arg VERSION} \
+  ${REPOSITORY:+--build-arg "$REPOSITORY"} $ARGS $INPUT_PATH
 fi
 
 echo "Executing tuplip $BUILD_PUSH..."
