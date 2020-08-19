@@ -35,24 +35,6 @@ if [ -n "$INPUT_CACHEFILE" ]; then
   fi
 fi
 
-if [ -n "$INPUT_SOURCETAG" ]; then
-  SOURCE="$INPUT_SOURCETAG"
-  echo "Skipping docker build..."
-else
-  echo "Executing docker build..."
-
-  if [ -n "$INPUT_BUILDARGS" ]; then
-    IFS="
-    "
-    for arg in $INPUT_BUILDARGS; do
-      ARGS="$ARGS --build-arg $arg "
-    done
-    unset IFS
-  fi
-
-  docker build -t "$SOURCE" -f "$INPUT_DOCKERFILE" ${VERSION:+--build-arg VERSION} $ARGS "$INPUT_PATH"
-fi
-
 if [ -n "$INPUT_BUILDONLY" ]; then
   BUILD_PUSH="build"
   SOURCE=""
@@ -85,6 +67,24 @@ else
   if [ -n "$INPUT_STRAIGHT" ]; then
     STRAIGHT="--straight"
   fi
+fi
+
+if [ -n "$INPUT_SOURCETAG" ]; then
+  SOURCE="$INPUT_SOURCETAG"
+  echo "Skipping docker build..."
+else
+  if [ -n "$INPUT_BUILDARGS" ]; then
+    IFS="
+    "
+    for arg in $INPUT_BUILDARGS; do
+      ARGS="$ARGS --build-arg $arg "
+    done
+    unset IFS
+  fi
+
+  echo "Executing docker build..."
+  docker build -t "$SOURCE" -f "$INPUT_DOCKERFILE" ${VERSION:+--build-arg VERSION} \
+  ${REPOSITORY:+--build-arg "$REPOSITORY"} $ARGS "$INPUT_PATH"
 fi
 
 echo "Executing tuplip $BUILD_PUSH..."
