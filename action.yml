@@ -43,6 +43,7 @@ inputs:
       This will match if `github.com/gofunky/ignore` pushes on `hub.docker.com/r/gofunky/ignore`, for instance.
       However, if an `ARG REPOSITORY=` is defined in the Dockerfile, for security reasons, this action will only
       proceed if Dockerfile and action input use the same repository as target.
+      In order to accept any given `ARG REPOSITORY` from the Dockerfile, set this input to an empty value (i.e., '').
     required: false
     default: ${{ github.repository }}
   path:

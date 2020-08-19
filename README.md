@@ -22,7 +22,7 @@ This is a typical example for a pull request workflow - having a Dockerfile in t
 ```yaml
 name: build
 on:
-  pull_request:
+  pull_request_target:
     branches: [ master ]
 
 jobs:
