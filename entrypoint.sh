@@ -60,6 +60,16 @@ else
 
   if ! grep -q "ARG REPOSITORY=" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
     REPOSITORY="$INPUT_REPOSITORY"
+  else
+    if ! grep -q "ARG REPOSITORY=$INPUT_REPOSITORY" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
+      if ! grep -q "ARG REPOSITORY='$INPUT_REPOSITORY'" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
+        if ! grep -q "ARG REPOSITORY="'"'"$INPUT_REPOSITORY"'"' "$INPUT_PATH/$INPUT_DOCKERFILE"; then
+          echo "::error The Dockerfile '$INPUT_PATH/$INPUT_DOCKERFILE' contains a different ARG REPOSITORY
+          than given in the action config!"
+          exit 127
+        fi
+      fi
+    fi
   fi
 
   if [ -n "$INPUT_USERNAME" ]; then

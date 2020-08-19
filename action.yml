@@ -41,7 +41,8 @@ inputs:
       This defines the public repository path on which the images are to be pushed.
       By default, the same repistory org and name will be used as the repository on that this action is executed.
       This will match if `github.com/gofunky/ignore` pushes on `hub.docker.com/r/gofunky/ignore`, for instance.
-      However, if an `ARG REPOSITORY=` is defined in the Dockerfile, the Docker argument will override this input.
+      However, if an `ARG REPOSITORY=` is defined in the Dockerfile, for security reasons, this action will only
+      proceed if Dockerfile and action input use the same repository as target.
     required: false
     default: ${{ github.repository }}
   path:

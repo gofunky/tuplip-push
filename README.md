@@ -129,7 +129,7 @@ jobs:
         buildArgs: 'dep'
         repository: 'different/repo'
         path: './subdirectory'
-        dockerfile: 'Dockerfile.alpine'
+        dockerfile: 'alpine.Dockerfile'
         username: ${{ secrets.DOCKER_USR }}
         password: ${{ secrets.MY_SECRET_DOCKER_TOKEN }}
         cacheFile: 'cache.alpine.tar'
