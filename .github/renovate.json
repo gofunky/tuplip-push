@@ -15,5 +15,6 @@
     "labels": [
       "security"
     ]
-  }
+  },
+  "ignorePaths": ["test/"]
 }
