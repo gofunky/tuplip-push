@@ -1,9 +1,17 @@
-name: 'tuplip push'
+name: 'tuplip build and push'
 author: 'matfax'
 branding:
   icon: 'tag'
   color: 'blue'
-description: 'apply and verify Docker tags in a transparent and convention-forming way'
+description: |
+  This action not only builds and pushes Docker images to the Docker Hub.
+  Unlike the default `docker push`, it uses tuplip to apply Docker tags in a transparent and convention-forming way.
+  In other words, tuplip creates a complete set of tags that projects all dependencies (e.g. the alpine version)
+  and their versions into the implicit tagging convention that is widely adopted today.
+  This is crucial for a reliable and transparent modeling of the security state of an image
+  so that insecure dependencies can be detected from day zero, given any image that includes the appropriate tags.
+  Most Docker images only include few dependencies in their tags or don't even provide regular updates.
+  Tuplip makes this detectable for all included dependencies and for any subset of dependencies that comes to use.
 inputs:
   sourceTag:
     description: |
@@ -27,7 +35,11 @@ inputs:
     description: |
       This defines a set of additional docker build arguments that are supposed to be passed to the given Dockerfile.
       The arguments only define the list of environment variables that are explicitly passed.
-      In order to pass ARG ONE="one" and ARG TWO="two" to the Dockerfile, set `buildArgs` to `ONE,TWO`,
+      In order to pass ARG ONE="one" and ARG TWO="two" to the Dockerfile, set `buildArgs` to `
+      |
+        ONE
+        TWO
+      `,
       and pass `ONE: 'one'` and `TWO: 'two' as environment variables in the `env` section of the workflow action.
     required: false
     default: ''
@@ -60,6 +72,15 @@ inputs:
     description: |
       IMPORTANT: Only use secrets to pass credentials to the action (e.g., secrets.DOCKER_PWD)!
       If inputs.username is given, the password (or token) also has to be defined.
+    required: false
+    default: ''
+  cacheFile:
+    description: |
+      This loads and stores the internal Docker cache from and to the given file.
+      This is necessary since the internal Docker cache is not transferred to the external GitHub layer cache
+      because it is outside of the attached workdir. By giving a cache file, the cache can be persisted among
+      build sessions by using `actions/cache`.
+      Set it to any non-zero value to enable the flag (e.g. `cache.tar`).
     required: false
     default: ''
   excludeMajor:
@@ -122,9 +143,13 @@ inputs:
       This adds the `--filter` flag to the push command.
       `--filter` excludes all tags without the given set of tag vectors from the output set.
       Only tags will be pushed that represent supersets of the given tags.
-      Set it to a comma-separated list of tags (e.g. `one,two`).
-      Do not use spaces between the given tags (e.g., `one, two`).
-      Spacings will break the shell processing.
+      Set it to a comma-separated list of tags (e.g. `some,tag`).
+      Do not use spaces between the given tags (e.g., `some, tag`). Spacings will break the shell processing.
+      Instead, you may use a line-separated list: `
+      |
+        some
+        tag
+      `
     required: false
     default: ''
 outputs:

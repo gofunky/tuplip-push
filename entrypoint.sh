@@ -5,11 +5,32 @@ export STRAIGHT=""
 export VERSION=""
 export SOURCE="$GITHUB_WORKFLOW"
 export ARGS=""
+export FILTER=""
 
-# TODO Caching (attach entrypoint internal to worker external cache somehow)
+if [ -n "$INPUT_FILTER" ]; then
+  IFS="
+  "
+  for arg in $INPUT_FILTER; do
+    if [ -n "$FILTER" ]; then
+      FILTER="$FILTER,$arg"
+    else
+      FILTER="$FILTER"
+    fi
+  done
+  unset IFS
+fi
 
 if [ -n "$INPUT_ROOTVERSION" ]; then
   VERSION="$INPUT_ROOTVERSION"
+fi
+
+if [ -n "$INPUT_CACHEFILE" ]; then
+  echo "Loading internal Docker layer cache..."
+  if [ -f "$INPUT_CACHEFILE" ]; then
+    docker load -i "$INPUT_CACHEFILE"
+  else
+    echo "SKIP: The layer cache doesn't exist yet."
+  fi
 fi
 
 if [ -n "$INPUT_SOURCETAG" ]; then
@@ -19,7 +40,8 @@ else
   echo "Executing docker build..."
 
   if [ -n "$INPUT_BUILDARGS" ]; then
-    IFS=","
+    IFS="
+    "
     for arg in $INPUT_BUILDARGS; do
       ARGS="$ARGS --build-arg $arg "
     done
@@ -32,7 +54,6 @@ fi
 if [ -n "$INPUT_BUILDONLY" ]; then
   BUILD_PUSH="build"
   SOURCE=""
-  echo "Executing tuplip build..."
 else
 
   if ! grep -q "ARG REPOSITORY=" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
@@ -44,21 +65,28 @@ else
       echo "ERROR: Input 'password' is not set even though 'username' is!"
       exit 127
     fi
+
+    echo "Logging into Docker Hub..."
     docker login -u "$INPUT_USERNAME" -p "$INPUT_PASSWORD"
   fi
 
   if [ -n "$INPUT_STRAIGHT" ]; then
     STRAIGHT="--straight"
   fi
-
-  echo "Executing tuplip push..."
 fi
+
+echo "Executing tuplip $BUILD_PUSH..."
 
 TAGS=$(
   /usr/local/bin/tuplip $BUILD_PUSH ${REPOSITORY:+to "$REPOSITORY"} from file "$INPUT_PATH/$INPUT_DOCKERFILE" \
   --verbose ${INPUT_EXCLUDEMAJOR:+--exclude-major} ${INPUT_EXCLUDEMINOR:+--exclude-minor} \
   ${INPUT_EXCLUDEBASE:+--exclude-base} ${INPUT_ADDLATEST:+--add-latest} ${INPUT_EXCLUSIVELATEST:+--exclusive-latest} \
-  $STRAIGHT ${VERSION:+--root-version "$VERSION"} ${INPUT_FILTER:+--filter "$INPUT_FILTER"}
+  $STRAIGHT ${VERSION:+--root-version "$VERSION"} ${FILTER:+--filter "$FILTER"}
 )
 
 echo "::set-output tags:: $TAGS"
+
+if [ -n "$INPUT_CACHEFILE" ]; then
+  echo "Storing internal Docker layer cache..."
+  docker save -o "$INPUT_CACHEFILE"
+fi

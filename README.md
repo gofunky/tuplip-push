@@ -19,13 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: satackey/action-docker-layer-caching@master
+    - uses: satackey/action-docker-layer-caching@v0
     - name: build docker image
-      uses: gofunky/tuplip-push@master
+      uses: gofunky/tuplip-push@v0
       with:
         buildOnly: true
-        rootVersion: 'latest'
-        exclusiveLatest: true
+        cacheFile: 'cache.tar'
 ```
 
 ### tuplip push latest
@@ -35,7 +34,7 @@ This is a typical example for a master branch push workflow - having a Dockerfil
 ```yaml
 name: build
 on:
-  pull_request:
+  push:
     branches: [ master ]
 
 jobs:
@@ -43,11 +42,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: satackey/action-docker-layer-caching@master
-    - name: build docker image
-      uses: gofunky/tuplip-push@master
+    - uses: satackey/action-docker-layer-caching@v0
+    - name: cache internal layers
+      uses: actions/cache@v2
       with:
-        buildOnly: true
+        path: 'cache.tar'
+        key: docker-internal-layers-${{ github.workflow }}-
+    - name: build docker image
+      uses: gofunky/tuplip-push@v0
+      with:
+        cacheFile: 'cache.tar'
         rootVersion: 'latest'
         exclusiveLatest: true
 ```
