@@ -14,11 +14,21 @@ inputs:
       or if the image exists already somewhere and only needs to be pulled, ready to be redistributed.
       If no source tag is set, this action will perform the building itself, using the name of the workflow.
       Set it to any non-zero value to enable the flag (e.g., `build-tag`).
+    required: false
+    default: ''
   buildOnly:
     description: |
       This lets tuplip use the `build` command instead of the `push` command.
       It's very useful for testing workflows that aren't supposed to push anything to Docker (e.g., for pull requests).
       Set it to any non-zero value to enable the flag (e.g. `true`).
+    required: false
+    default: ''
+  buildArgs:
+    description: |
+      This defines a set of additional docker build arguments that are supposed to be passed to the given Dockerfile.
+      The arguments only define the list of environment variables that are explicitly passed.
+      In order to pass ARG ONE="one" and ARG TWO="two" to the Dockerfile, set `buildArgs` to `ONE,TWO`,
+      and pass `ONE: 'one'` and `TWO: 'two' as environment variables in the `env` section of the workflow action.
     required: false
     default: ''
   repository:

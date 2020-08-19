@@ -4,6 +4,7 @@ export BUILD_PUSH="push"
 export STRAIGHT=""
 export VERSION=""
 export SOURCE="$GITHUB_WORKFLOW"
+export ARGS=""
 
 # TODO Caching (attach entrypoint internal to worker external cache somehow)
 
@@ -16,8 +17,16 @@ if [ -n "$INPUT_SOURCETAG" ]; then
   echo "Skipping docker build..."
 else
   echo "Executing docker build..."
-  docker build -t "$SOURCE" -f "$INPUT_DOCKERFILE" ${VERSION:+--build-arg VERSION} "$INPUT_PATH"
-  # TODO More build args
+
+  if [ -n "$INPUT_BUILDARGS" ]; then
+    IFS=","
+    for arg in $INPUT_BUILDARGS; do
+      ARGS="$ARGS --build-arg $arg "
+    done
+    unset IFS
+  fi
+
+  docker build -t "$SOURCE" -f "$INPUT_DOCKERFILE" ${VERSION:+--build-arg VERSION} $ARGS "$INPUT_PATH"
 fi
 
 if [ -n "$INPUT_BUILDONLY" ]; then
