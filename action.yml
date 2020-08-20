@@ -69,15 +69,6 @@ inputs:
       If inputs.username is given, the password (or token) also has to be defined.
     required: false
     default: ''
-  cacheFile:
-    description: |
-      This loads and stores the internal Docker cache from and to the given file.
-      This is necessary since the internal Docker cache is not transferred to the external GitHub layer cache
-      because it is outside of the attached workdir. By giving a cache file, the cache can be persisted among
-      build sessions by using `actions/cache`.
-      Set it to any non-zero value to enable the flag (e.g. `cache.tar`).
-    required: false
-    default: ''
   excludeMajor:
     description: |
       This adds the `--exclude-major` flag to the push command.

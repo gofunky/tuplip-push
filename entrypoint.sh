@@ -26,15 +26,6 @@ if [ -n "$INPUT_ROOTVERSION" ]; then
   VERSION="$INPUT_ROOTVERSION"
 fi
 
-if [ -n "$INPUT_CACHEFILE" ]; then
-  echo "Loading internal Docker layer cache..."
-  if [ -f "$INPUT_CACHEFILE" ]; then
-    docker load -i "$INPUT_CACHEFILE"
-  else
-    echo "::warning SKIP: The layer cache doesn't exist yet."
-  fi
-fi
-
 if [ -n "$INPUT_BUILDONLY" ]; then
   BUILD_PUSH="build"
   SOURCE=""
@@ -101,8 +92,3 @@ echo "::set-output name=tags:: $TAGS"
 # This is supposed to prevent accidental caching of a Docker image with a valid login
 echo "Logging out of Docker registry..."
 docker logout
-
-if [ -n "$INPUT_CACHEFILE" ]; then
-  echo "Storing internal Docker layer cache..."
-  docker save -o "$INPUT_CACHEFILE" "$SOURCE"
-fi

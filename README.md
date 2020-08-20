@@ -53,15 +53,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: satackey/action-docker-layer-caching@v0
-    - name: cache internal layers
-      uses: actions/cache@v2
-      with:
-        path: 'cache.tar'
-        key: tuplip-internal-layers-${{ github.workflow }}-
     - name: build and push latest docker image
       uses: gofunky/tuplip-push@v0
       with:
-        cacheFile: 'cache.tar'
         rootVersion: 'latest'
         username: ${{ secrets.DOCKER_USR }}
         password: ${{ secrets.MY_SECRET_DOCKER_TOKEN }}
@@ -84,15 +78,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: satackey/action-docker-layer-caching@v0
-    - name: cache internal layers
-      uses: actions/cache@v2
-      with:
-        path: 'cache.tar'
-        key: tuplip-internal-layers-${{ github.workflow }}-
     - name: release Docker image
       uses: gofunky/tuplip-push@v0
       with:
-        cacheFile: 'cache.tar'
         rootVersion: ${{ github.ref }}
         username: ${{ secrets.DOCKER_USR }}
         password: ${{ secrets.MY_SECRET_DOCKER_TOKEN }}
@@ -113,12 +101,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: satackey/action-docker-layer-caching@v0
-    - name: cache internal layers
-      uses: actions/cache@v2
+    - name: cache docker layers
+      uses: satackey/action-docker-layer-caching@v0
       with:
-        path: 'cache.alpine.tar'
-        key: tuplip-internal-layers-alpine-${{ github.workflow }}-
+        key: docker-layers-${{ github.workflow }}-${{ hashFiles('**/alpine.Dockerfile') }}
     - name: build and push latest docker image
       uses: gofunky/tuplip-push@v0
       env:
@@ -132,7 +118,6 @@ jobs:
         dockerfile: 'alpine.Dockerfile'
         username: ${{ secrets.DOCKER_USR }}
         password: ${{ secrets.MY_SECRET_DOCKER_TOKEN }}
-        cacheFile: 'cache.alpine.tar'
         excludeMajor: 'true'
         excludeMinor: ''
         excludeBase: ''
