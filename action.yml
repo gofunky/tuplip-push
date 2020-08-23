@@ -17,6 +17,7 @@ inputs:
       Set it to any non-zero value to enable the flag (e.g., `build-tag`).
     required: false
     default: ''
+    env: 'SOURCE_TAG'
   buildOnly:
     description: |
       This lets tuplip use the `build` command instead of the `push` command.
