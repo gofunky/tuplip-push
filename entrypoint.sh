@@ -92,9 +92,9 @@ STATUS=$?
 echo "Logging out of Docker registry..."
 docker logout
 
-if [ test $STATUS -eq 0 ]; then
-	echo "::set-output name=tags::$TAGS"
+if test $STATUS -eq 0; then
+  echo "::set-output name=tags::$TAGS"
 else
-	echo "::error tuplip command did not succeed!"
+  echo "::error tuplip command did not succeed!"
   exit 1
 fi
