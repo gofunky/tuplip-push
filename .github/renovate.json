@@ -6,15 +6,22 @@
   ],
   "separateMinorPatch": true,
   "patch": {
-    "automerge": true,
-    "labels": [
-      "dependencies"
-    ]
+    "automerge": true
+  },
+  "pin": {
+    "automerge": true
+  },
+  "lockFileMaintenance": {
+    "automerge": true
   },
   "vulnerabilityAlerts": {
     "labels": [
       "security"
     ]
   },
+  "labels": [
+    "dependencies",
+    "chore"
+  ]
   "ignorePaths": ["test/"]
 }
