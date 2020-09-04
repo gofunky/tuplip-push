@@ -19,7 +19,7 @@ inputs:
     default: ''
   buildOnly:
     description: |
-      This lets tuplip use the `build` command instead of the `push` command.
+      This lets tuplip use the `tag` command instead of the `push` command.
       It's very useful for testing workflows that aren't supposed to push anything to Docker (e.g., for pull requests).
       Set it to any non-zero value to enable the flag (e.g. `true`), `false` also counts as true.
     required: false
