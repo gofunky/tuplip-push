@@ -39,7 +39,7 @@ else
         if ! grep -q "ARG REPOSITORY="'"'"$INPUT_REPOSITORY"'"' "$INPUT_PATH/$INPUT_DOCKERFILE"; then
           echo "::error The Dockerfile '$INPUT_PATH/$INPUT_DOCKERFILE' contains a different ARG REPOSITORY
           than given in the action config!"
-          exit 127
+          exit 6
         fi
       fi
     fi
@@ -48,7 +48,7 @@ else
   if [ -n "$INPUT_USERNAME" ]; then
     if [ -z "$INPUT_PASSWORD" ]; then
       echo "::error Input 'password' is not set even though 'username' is!"
-      exit 127
+      exit 22
     fi
 
     echo "Logging into Docker registry..."
@@ -81,14 +81,20 @@ fi
 echo "Executing tuplip $BUILD_PUSH..."
 
 TAGS=$( \
-  /usr/local/bin/tuplip $BUILD_PUSH ${REPOSITORY:+to "$REPOSITORY"} from file "$INPUT_PATH/$INPUT_DOCKERFILE" \
+  tuplip $BUILD_PUSH ${REPOSITORY:+to "$REPOSITORY"} from file "$INPUT_PATH/$INPUT_DOCKERFILE" \
   --verbose ${INPUT_EXCLUDEMAJOR:+--exclude-major} ${INPUT_EXCLUDEMINOR:+--exclude-minor} \
   ${INPUT_EXCLUDEBASE:+--exclude-base} ${INPUT_ADDLATEST:+--add-latest} ${INPUT_EXCLUSIVELATEST:+--exclusive-latest} \
   $STRAIGHT ${VERSION:+--root-version "$VERSION"} ${FILTER:+--filter "$FILTER"} \
 )
-
-echo "::set-output name=tags:: $TAGS"
+STATUS=$?
 
 # This is supposed to prevent accidental caching of a Docker image with a valid login
 echo "Logging out of Docker registry..."
 docker logout
+
+if [ test $STATUS -eq 0 ]; then
+	echo "::set-output name=tags::$TAGS"
+else
+	echo "::error tuplip command did not succeed!"
+  exit 1
+fi
