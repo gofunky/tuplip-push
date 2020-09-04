@@ -22,6 +22,6 @@
   "labels": [
     "dependencies",
     "chore"
-  ]
+  ],
   "ignorePaths": ["test/"]
 }
