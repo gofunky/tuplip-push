@@ -8,7 +8,7 @@ on:
 
 jobs:
   test1:
-    name: build and push
+    name: test build and push with repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.2
@@ -22,9 +22,39 @@ jobs:
       - name: build and push latest docker image
         uses: ./
         with:
-          rootVersion: '0.1.2'
+          rootVersion: '0.1'
           repository: 'gofunky/ignore'
           path: './test'
           dockerfile: 'WithRepository.Dockerfile'
           username: ${{ secrets.DOCKER_USR }}
           password: ${{ secrets.DOCKER_PWD }}
+          excludeMajor: true
+          excludeMinor: true
+  test2:
+    name: test build and push with invalid repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.2
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+      - name: cache docker layers
+        uses: satackey/action-docker-layer-caching@v0.0.8
+        with:
+          key: docker-layers-${{ github.workflow }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
+      - name: build and push latest docker image
+        id: tuplip
+        continue-on-error: true
+        uses: ./
+        with:
+          rootVersion: '0.1'
+          repository: 'gofunky/invalid'
+          path: './test'
+          dockerfile: 'WithRepository.Dockerfile'
+          username: ${{ secrets.DOCKER_USR }}
+          password: ${{ secrets.DOCKER_PWD }}
+          excludeMajor: true
+          excludeMinor: true  
+      - name: check on failures
+        if: steps.tuplip.outputs.status == 'success'
+        run: exit 1
