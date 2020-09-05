@@ -66,11 +66,6 @@ jobs:
       - name: check on failures
         if: steps.tuplip.outputs.status == 'success'
         run: exit 1
-      - run: echo "${{ steps.tuplip.outputs.tags }}" > ${{ github.job }}.tags
-      - uses: actions/upload-artifact@v2.1.4
-        with:
-          name: ${{ github.job }}-tags
-          path: ${{ github.job }}.tags
   without-repository:
     name: build and push without repository
     runs-on: ubuntu-latest
