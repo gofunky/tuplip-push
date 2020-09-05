@@ -79,9 +79,11 @@ jobs:
           dockerfile: 'WithoutRepository.Dockerfile'
           username: ${{ secrets.DOCKER_USR }}
           password: ${{ secrets.DOCKER_PWD }}
+          excludeBase: true
           filter: |
             mytag
             alpine
+            git
   test4:
     name: build and push latest
     runs-on: ubuntu-latest
