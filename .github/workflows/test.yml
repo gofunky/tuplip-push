@@ -147,13 +147,13 @@ jobs:
   verify:
     name: verify tags of ${{ matrix.test }}
     runs-on: ubuntu-latest
-    needs: [latest, build-only]
+    needs: [latest]
     strategy:
       matrix:
-        test: [latest, build-only]
+        test: [latest]
     steps:
       - uses: actions/checkout@v2.3.2
-      - run: echo "${{ needs.${{ matrix.test }}.outputs.tags }}" > ${{ matrix.test }}.outputs
+      - run: echo "${{ needs.latest.outputs.tags }}" > ${{ matrix.test }}.outputs
       - uses: LouisBrunner/diff-action@v0.1.1
         with:
           old: test/${{ matrix.test }}.tags
