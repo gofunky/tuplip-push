@@ -5,7 +5,7 @@ export REPOSITORY=""
 export BUILD_PUSH="push"
 export STRAIGHT=""
 export VERSION=""
-export SOURCE="$GITHUB_WORKFLOW"
+export SOURCE="$GITHUB_JOB"
 export ARGS=""
 export FILTER=""
 
