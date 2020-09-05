@@ -4,7 +4,7 @@ branding:
   icon: 'tag'
   color: 'blue'
 description: |
-  tuplip not only builds Docker images, but also tags and pushes a complete superset of dependency and their versions.
+  tuplip enables advanced tagging of Docker images by parsing Docker dependencies and versions into a superset of tags.
 inputs:
   sourceTag:
     description: |
