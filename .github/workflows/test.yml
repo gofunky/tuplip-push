@@ -7,9 +7,11 @@ on:
     branches: [ master ]
 
 jobs:
-  test1:
+  with-repository:
     name: build and push with repository
     runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.tuplip.outputs.tags }}
     steps:
       - uses: actions/checkout@v2.3.2
         with:
@@ -21,6 +23,7 @@ jobs:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
       - name: build and push latest docker image
         uses: ./
+        id: tuplip
         with:
           rootVersion: '0.1'
           repository: 'gofunky/ignore'
@@ -30,9 +33,11 @@ jobs:
           password: ${{ secrets.DOCKER_PWD }}
           excludeMajor: true
           excludeMinor: true
-  test2:
+  with-invalid-repository:
     name: build and push with invalid repository
     runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.tuplip.outputs.tags }}
     steps:
       - uses: actions/checkout@v2.3.2
         with:
@@ -58,9 +63,11 @@ jobs:
       - name: check on failures
         if: steps.tuplip.outputs.status == 'success'
         run: exit 1
-  test3:
+  without-repository:
     name: build and push without repository
     runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.tuplip.outputs.tags }}
     steps:
       - uses: actions/checkout@v2.3.2
         with:
@@ -71,9 +78,10 @@ jobs:
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithoutRepository.Dockerfile') }}
       - name: build and push latest docker image
+        id: tuplip
         uses: ./
         with:
-          rootVersion: '0.1.2'
+          rootVersion: '0.3'
           repository: 'gofunky/ignore'
           path: './test'
           dockerfile: 'WithoutRepository.Dockerfile'
@@ -84,9 +92,12 @@ jobs:
             mytag
             alpine
             git
-  test4:
+            bash
+  latest:
     name: build and push latest
     runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.tuplip.outputs.tags }}
     steps:
       - uses: actions/checkout@v2.3.2
         with:
@@ -97,6 +108,7 @@ jobs:
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithoutRepository.Dockerfile') }}
       - name: build and push latest docker image
+        id: tuplip
         uses: ./
         with:
           rootVersion: latest
@@ -108,9 +120,11 @@ jobs:
           password: ${{ secrets.DOCKER_PWD }}
           excludeMajor: true
           excludeMinor: true
-  test5:
+  build-only:
     name: build only
     runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.tuplip.outputs.tags }}
     steps:
       - uses: actions/checkout@v2.3.2
         with:
@@ -121,6 +135,7 @@ jobs:
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithoutRepository.Dockerfile') }}
       - name: build and push latest docker image
+        id: tuplip
         uses: ./
         with:
           rootVersion: '0.1.2'
@@ -129,3 +144,23 @@ jobs:
           path: './test'
           dockerfile: 'WithoutRepository.Dockerfile'
           buildOnly: true
+  verify:
+    name: verify tags of ${{ matrix.test }}
+    runs-on: ubuntu-latest
+    needs: ${{ matrix.test }}
+    strategy:
+      matrix:
+        test: [latest, build-only]
+    steps:
+      - uses: actions/checkout@v2.3.2
+      - run: echo "${{ needs.${{ matrix.test }}.outputs.tags }}" > ${{ matrix.test }}.outputs
+      - uses: LouisBrunner/diff-action@v0.1.1
+        with:
+          old: test/${{ matrix.test }}.tags
+          new: ${{ matrix.test }}.outputs
+          mode: addition
+          tolerance: same
+          token: ${{ github.token }}
+          title: ${{ matrix.test }}
+          notify_check: true
+          notify_issue: true
