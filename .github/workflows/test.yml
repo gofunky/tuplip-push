@@ -147,7 +147,7 @@ jobs:
   verify:
     name: verify tags of ${{ matrix.test }}
     runs-on: ubuntu-latest
-    needs: ${{ matrix.test }}
+    needs: [latest, build-only]
     strategy:
       matrix:
         test: [latest, build-only]
