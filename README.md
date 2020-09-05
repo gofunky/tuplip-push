@@ -1,5 +1,5 @@
 # tuplip build and push action
-A [GitHub Action](https://github.com/features/actions) that uses [tuplip](https://github.com/gofunky/tuplip) to build and push a single given Dockerfile 
+A [GitHub Action](https://github.com/features/actions) that uses [tuplip](https://github.com/gofunky/tuplip) to tag and optionally push a single Dockerfile 
 to the Docker Hub.
 
 ## What does it do?
@@ -30,6 +30,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        ref: ${{ github.head_ref }}
     - uses: satackey/action-docker-layer-caching@v0
     - name: build docker image
       uses: gofunky/tuplip-push@v0
@@ -56,7 +59,8 @@ jobs:
     - name: build and push latest docker image
       uses: gofunky/tuplip-push@v0
       with:
-        rootVersion: 'latest'
+        rootVersion: latest
+        exclusiveLatest: true
         username: ${{ secrets.DOCKER_USR }}
         password: ${{ secrets.MY_SECRET_DOCKER_TOKEN }}
 ```
