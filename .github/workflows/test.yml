@@ -90,9 +90,7 @@ jobs:
           excludeBase: true
           filter: |
             mytag
-            alpine
             git
-            bash
   latest:
     name: build and push latest
     runs-on: ubuntu-latest
