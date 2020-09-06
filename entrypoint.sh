@@ -87,8 +87,11 @@ TAGS=$( \
 )
 
 # Workaround until actions/toolkit#403 is resolved
+# shellcheck disable=SC2039
 TAGS="${TAGS//'%'/'%25'}"
+# shellcheck disable=SC2039
 TAGS="${TAGS//$'\n'/'%0A'}"
+# shellcheck disable=SC2039
 TAGS="${TAGS//$'\r'/'%0D'}"
 
 STATUS="$?"
