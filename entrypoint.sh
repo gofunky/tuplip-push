@@ -86,6 +86,11 @@ TAGS=$( \
   $STRAIGHT ${VERSION:+--root-version "$VERSION"} ${FILTER:+--filter "$FILTER"} \
 )
 
+# Workaround until actions/toolkit#403 is resolved
+TAGS="${TAGS//'%'/'%25'}"
+TAGS="${TAGS//$'\n'/'%0A'}"
+TAGS="${TAGS//$'\r'/'%0D'}"
+
 STATUS="$?"
 
 # This is supposed to prevent accidental caching of a Docker image with a valid login
