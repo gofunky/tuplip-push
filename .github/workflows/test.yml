@@ -36,6 +36,31 @@ jobs:
         with:
           name: ${{ github.job }}-tags
           path: ${{ github.job }}.tags
+  defaults:
+    name: build and push with default version and repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.2
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+      - name: cache docker layers
+        uses: satackey/action-docker-layer-caching@v0.0.8
+        with:
+          key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
+      - name: build and push latest docker image
+        uses: ./
+        id: tuplip
+        with:
+          path: './test'
+          dockerfile: 'WithRepository.Dockerfile'
+          username: ${{ secrets.DOCKER_USR }}
+          password: ${{ secrets.DOCKER_PWD }}
+      - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
+      - uses: actions/upload-artifact@v2.1.4
+        with:
+          name: ${{ github.job }}-tags
+          path: ${{ github.job }}.tags
   with-invalid-repository:
     name: build and push with invalid repository
     runs-on: ubuntu-latest
@@ -129,7 +154,7 @@ jobs:
       - uses: actions/upload-artifact@v2.1.4
         with:
           name: ${{ github.job }}-tags
-          path: ${{ github.job }}.tags 
+          path: ${{ github.job }}.tags
   build-only:
     name: build only
     runs-on: ubuntu-latest
@@ -158,14 +183,55 @@ jobs:
       - uses: actions/upload-artifact@v2.1.4
         with:
           name: ${{ github.job }}-tags
-          path: ${{ github.job }}.tags 
+          path: ${{ github.job }}.tags
+  straight:
+    name: build and push tags straight
+    runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.tuplip.outputs.tags }}
+    steps:
+      - uses: actions/checkout@v2.3.2
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+      - name: cache docker layers
+        uses: satackey/action-docker-layer-caching@v0.0.8
+        with:
+          key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
+      - name: build and push latest docker image
+        id: tuplip
+        uses: ./
+        with:
+          rootVersion: '0.1.2'
+          addLatest: true
+          repository: 'gofunky/ignore'
+          path: './test'
+          dockerfile: 'WithRepository.Dockerfile'
+          straight: true
+      - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
+      - uses: actions/upload-artifact@v2.1.4
+        with:
+          name: ${{ github.job }}-tags
+          path: ${{ github.job }}.tags
   verify:
     name: verify tags of ${{ matrix.test }}
     runs-on: ubuntu-latest
-    needs: [latest, with-repository, build-only, without-repository]
+    needs:
+      - latest
+      - with-repository
+      - build-only
+      - without-repository
+      - defaults
+      - straight
     strategy:
       matrix:
-        test: [latest, with-repository, build-only, without-repository]
+        test:
+          - latest
+          - with-repository
+          - build-only
+          - without-repository
+          - defaults
+          - straight
     steps:
       - uses: actions/checkout@v2.3.2
       - uses: actions/download-artifact@v2.0.5
