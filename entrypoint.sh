@@ -1,7 +1,7 @@
 #!/bin/sh
 
 export TAGS=""
-export REPOSITORY=""
+export REPOSITORY="$INPUT_REPOSITORY"
 export BUILD_PUSH="push"
 export STRAIGHT=""
 export VERSION=""
@@ -35,18 +35,19 @@ if [ -n "$INPUT_STRAIGHT" ]; then
 fi
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# Match repository with Dockerfile
+# Verify Dockerfile
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-if ! grep -q "ARG REPOSITORY=" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
-  REPOSITORY="$INPUT_REPOSITORY"
-else
-  if ! grep -q "ARG REPOSITORY=$INPUT_REPOSITORY" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
-    if ! grep -q "ARG REPOSITORY='$INPUT_REPOSITORY'" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
-      if ! grep -q "ARG REPOSITORY="'"'"$INPUT_REPOSITORY"'"' "$INPUT_PATH/$INPUT_DOCKERFILE"; then
-        echo "::error::The Dockerfile '$INPUT_PATH/$INPUT_DOCKERFILE' contains a different ARG REPOSITORY
-        than given in the action config!"
-        exit 6
+# If any repository is given, and if the Dockerfile has a default repository defined, then ensure they are equal.
+if [ -n "$REPOSITORY" ]; then
+  if grep -q "ARG REPOSITORY=" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
+    if ! grep -q "ARG REPOSITORY=$REPOSITORY" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
+      if ! grep -q "ARG REPOSITORY='$REPOSITORY'" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
+        if ! grep -q "ARG REPOSITORY="'"'"$REPOSITORY"'"' "$INPUT_PATH/$INPUT_DOCKERFILE"; then
+          echo "::error::The Dockerfile '$INPUT_PATH/$INPUT_DOCKERFILE' contains a different ARG REPOSITORY
+          than given in the action config!"
+          exit 6
+        fi
       fi
     fi
   fi
@@ -60,10 +61,20 @@ if ! grep -q "ARG REPOSITORY" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
   echo "ARG REPOSITORY='$REPOSITORY'" >> "$INPUT_PATH/$INPUT_DOCKERFILE"
 fi
 
+if ! grep -q "ARG VERSION" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
+  echo "ARG VERSION='$VERSION'" >> "$INPUT_PATH/$INPUT_DOCKERFILE"
+fi
+
 if ! grep -q "LABEL fun.gofunky.tuplip.repository" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
   # use Dockerfile-internal $REPOSITORY
   # shellcheck disable=SC2016
   echo 'LABEL fun.gofunky.tuplip.repository="$REPOSITORY"' >> "$INPUT_PATH/$INPUT_DOCKERFILE"
+fi
+
+if ! grep -q "LABEL fun.gofunky.tuplip.version" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
+  # use Dockerfile-internal $VERSION
+  # shellcheck disable=SC2016
+  echo 'LABEL fun.gofunky.tuplip.version="$VERSION"' >> "$INPUT_PATH/$INPUT_DOCKERFILE"
 fi
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -125,7 +136,15 @@ fi
 if [ -z "$REPOSITORY" ]; then
   if ! REPOSITORY=$(docker inspect --format '{{ index .Config.Labels "fun.gofunky.tuplip.repository" }}' "$SOURCE");
   then
-    echo "::error::target repository was neither given nor detected in docker image!"
+    echo "::error::target repository was neither given nor detected in the docker image!"
+    exit 6
+  fi
+fi
+
+if [ -z "$VERSION" ]; then
+  if ! VERSION=$(docker inspect --format '{{ index .Config.Labels "fun.gofunky.tuplip.version" }}' "$SOURCE");
+  then
+    echo "::error::root version was neither given nor detected in the docker image!"
     exit 6
   fi
 fi

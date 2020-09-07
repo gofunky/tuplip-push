@@ -14,7 +14,7 @@ inputs:
       The local image ideally is provided by another script given in the `buildScript` input.
       This is useful if the docker image needs to be build with advanced parameters,
       or if the image exists already somewhere and only needs to be pulled, ready to be redistributed.
-      If no source tag is set, this action will perform the building itself, using the name of the workflow.
+      If no source tag is set, this action will perform the building itself, using the name of the workflow job.
       Set it to any non-zero value to enable the flag (e.g., `build-tag`).
     required: false
     default: ''
