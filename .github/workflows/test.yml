@@ -93,7 +93,6 @@ jobs:
           excludeBase: true
           filter: |
             mytag
-            git
       - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
       - uses: actions/upload-artifact@v2.1.4
         with:
