@@ -167,15 +167,15 @@ echo "Executing tuplip $BUILD_PUSH..."
 if [ -n "$STRAIGHT" ]; then
   TAGS=$( \
     echo "$STRAIGHT" | tuplip $BUILD_PUSH "$SOURCE" ${REPOSITORY:+to "$REPOSITORY"} from stdin \
-    --verbose --straight --separator="," ${INPUT_ADDLATEST:+--add-latest} ${INPUT_EXCLUSIVELATEST:+--exclusive-latest} \
-    ${VERSION:+--root-version "$VERSION"} \
+    --verbose --straight --separator="," ${INPUT_CHECKSEMVER:+--check-semver} \
+    ${INPUT_ADDLATEST:+--add-latest} ${INPUT_EXCLUSIVELATEST:+--exclusive-latest} \
   )
 else
   TAGS=$( \
     tuplip $BUILD_PUSH "$SOURCE" ${REPOSITORY:+to "$REPOSITORY"} from file "$INPUT_PATH/$INPUT_DOCKERFILE" \
     --verbose ${INPUT_EXCLUDEMAJOR:+--exclude-major} ${INPUT_EXCLUDEMINOR:+--exclude-minor} \
     ${INPUT_EXCLUDEBASE:+--exclude-base} ${INPUT_ADDLATEST:+--add-latest} ${INPUT_EXCLUSIVELATEST:+--exclusive-latest} \
-    ${VERSION:+--root-version "$VERSION"} ${FILTER:+--filter "$FILTER"} \
+    ${INPUT_CHECKSEMVER:+--check-semver} ${VERSION:+--root-version "$VERSION"} ${FILTER:+--filter "$FILTER"} \
   )
 fi
 

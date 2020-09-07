@@ -38,6 +38,7 @@ jobs:
       uses: gofunky/tuplip-push@v0
       with:
         buildOnly: true
+        checkSemVer: true
 ```
 
 ### tuplip build and push latest
@@ -59,8 +60,7 @@ jobs:
     - name: build and push latest docker image
       uses: gofunky/tuplip-push@v0
       with:
-        rootVersion: latest
-        exclusiveLatest: true
+        straight: latest
         username: ${{ secrets.DOCKER_USR }}
         password: ${{ secrets.MY_SECRET_DOCKER_TOKEN }}
 ```
@@ -86,6 +86,7 @@ jobs:
       uses: gofunky/tuplip-push@v0
       with:
         rootVersion: ${{ github.ref }}
+        checkSemVer: true
         username: ${{ secrets.DOCKER_USR }}
         password: ${{ secrets.MY_SECRET_DOCKER_TOKEN }}
 ```
@@ -115,6 +116,7 @@ jobs:
         dep: ${{ steps.previous.outputs.dep_version }}
       with:
         sourceTag: ''
+        buildScript: ''
         buildOnly: ''
         buildArgs: 'dep'
         repository: 'different/repo'
@@ -122,12 +124,13 @@ jobs:
         dockerfile: 'alpine.Dockerfile'
         username: ${{ secrets.DOCKER_USR }}
         password: ${{ secrets.MY_SECRET_DOCKER_TOKEN }}
-        excludeMajor: 'true'
+        excludeMajor: true
         excludeMinor: ''
         excludeBase: ''
-        addLatest: 'true'
-        exclusiveLatest: ''
-        rootVersion: 'latest'
+        addLatest: true
+        exclusiveLatest: true
+        checkSemVer: true
+        rootVersion: ${{ github.ref }}
         straight: ''
         filter: |
           dep

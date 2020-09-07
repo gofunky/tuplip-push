@@ -126,6 +126,13 @@ inputs:
       Set it to any non-zero value to enable the flag (e.g. `1.0.0`).
     required: false
     default: ''
+  checkSemVer:
+    description: |
+      This adds the `--check-semver` flag to the push command.
+      `--check-semver` lets tuplip verify all versioned tag vectors for a valid semantic version syntax.
+      Set it to any non-zero value to enable the flag (e.g. `true`), `false` also counts as true.
+    required: false
+    default: ''
   straight:
     description: |
       This adds the `--straight` flag to the push command.
