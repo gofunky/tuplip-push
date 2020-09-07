@@ -8,13 +8,24 @@ description: |
 inputs:
   sourceTag:
     description: |
-      You can pass your own source tag for an existing local image.
+      You can pass your own source tag to an existing local image.
       Then, this action will not execute `docker build` before pushing and assume that your workflow has ensured
       that the given tag exists locally, ready to be pushed.
+      The local image ideally is provided by another script given in the `buildScript` input.
       This is useful if the docker image needs to be build with advanced parameters,
       or if the image exists already somewhere and only needs to be pulled, ready to be redistributed.
       If no source tag is set, this action will perform the building itself, using the name of the workflow.
       Set it to any non-zero value to enable the flag (e.g., `build-tag`).
+    required: false
+    default: ''
+  buildScript:
+    description: |
+      The script given in this input will override the default build mechanism of this action.
+      The `sourceTag` of the built image will also have to be provided then.
+      The advantage of passing a buildScript is that the build is executed in the same environment as the push.
+      That accelerates workflow runtime and makes sure that consistent docker versions are used.
+      The script has to be in POSIX standard.
+      Set it to any non-zero path to enable the flag (e.g., `./build.sh`).
     required: false
     default: ''
   buildOnly:

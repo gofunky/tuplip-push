@@ -59,9 +59,21 @@ else
   fi
 fi
 
+if [ -n "$INPUT_BUILDSCRIPT" ]; then
+  if [ -z "$INPUT_SOURCETAG" ]; then
+    echo "::error Input 'sourceTag' is not set even though 'buildScript' is!"
+    exit 22
+  fi
+
+  echo "Executing given build script..."
+  sh "$INPUT_BUILDSCRIPT"
+fi
+
 if [ -n "$INPUT_SOURCETAG" ]; then
   SOURCE="$INPUT_SOURCETAG"
-  echo "Skipping docker build..."
+  if [ -z "$INPUT_BUILDSCRIPT" ]; then
+    echo "Skipping docker build..."
+  fi
 else
   if [ -n "$INPUT_BUILDARGS" ]; then
     IFS="
@@ -74,7 +86,7 @@ else
 
   echo "Executing docker build..."
   docker build -t "$SOURCE" -f "$INPUT_PATH/$INPUT_DOCKERFILE" ${VERSION:+--build-arg VERSION} \
-  ${REPOSITORY:+--build-arg "$REPOSITORY"} $ARGS "$INPUT_PATH"
+  ${REPOSITORY:+--build-arg REPOSITORY} $ARGS "$INPUT_PATH"
 fi
 
 echo "Executing tuplip $BUILD_PUSH..."
