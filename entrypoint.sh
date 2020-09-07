@@ -53,8 +53,8 @@ if [ -n "$REPOSITORY" ]; then
     if ! grep -q "ARG REPOSITORY=$REPOSITORY" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
       if ! grep -q "ARG REPOSITORY='$REPOSITORY'" "$INPUT_PATH/$INPUT_DOCKERFILE"; then
         if ! grep -q "ARG REPOSITORY="'"'"$REPOSITORY"'"' "$INPUT_PATH/$INPUT_DOCKERFILE"; then
-          echo "::error::The Dockerfile '$INPUT_PATH/$INPUT_DOCKERFILE' contains a different ARG REPOSITORY
-          than given in the action config!"
+          echo "::error:: the Dockerfile '$INPUT_PATH/$INPUT_DOCKERFILE' contains a different ARG REPOSITORY
+          than given in the action config"
           exit 6
         fi
       fi
@@ -96,13 +96,17 @@ else
   echo "Logging into Docker registry..."
   if [ -n "$INPUT_USERNAME" ]; then
     if [ -z "$INPUT_PASSWORD" ]; then
-      echo "::error::Input 'password' is not set even though 'username' is!"
+      echo "::error:: input 'password' is not set even though 'username' is"
       exit 22
     fi
     echo "$INPUT_PASSWORD" | docker login -u "$INPUT_USERNAME" --password-stdin
   else
     # Relogin will succeed if the user authenticated before this action
-    docker login
+    if ! docker login | grep -iq 'succeeded';
+    then
+      echo "::error:: docker was not logged in and no credentials were provided"
+      exit 13
+    fi
   fi
 fi
 
@@ -112,7 +116,7 @@ fi
 
 if [ -n "$INPUT_BUILDSCRIPT" ]; then
   if [ -z "$INPUT_SOURCETAG" ]; then
-    echo "::error::Input 'sourceTag' is not set even though 'buildScript' is!"
+    echo "::error:: input 'sourceTag' is not set even though 'buildScript' is"
     exit 22
   fi
 
@@ -147,16 +151,16 @@ fi
 if [ -z "$REPOSITORY" ]; then
   if ! REPOSITORY=$(docker inspect --format '{{ index .Config.Labels "fun.gofunky.tuplip.repository" }}' "$SOURCE");
   then
-    echo "::error::target repository was neither given nor detected in the docker image!"
-    exit 6
+    echo "::error:: target repository was neither given nor detected in the docker image"
+    exit 61
   fi
 fi
 
 if [ -z "$VERSION" ]; then
   if ! VERSION=$(docker inspect --format '{{ index .Config.Labels "fun.gofunky.tuplip.version" }}' "$SOURCE");
   then
-    echo "::error::root version was neither given nor detected in the docker image!"
-    exit 6
+    echo "::error:: root version was neither given nor detected in the docker image"
+    exit 61
   fi
 fi
 
@@ -206,6 +210,6 @@ docker logout
 if [ "$STATUS" -eq 0 ]; then
   echo "::set-output name=tags::$TAGS"
 else
-  echo "::error::tuplip command did not succeed!"
+  echo "::error:: tuplip command did not succeed"
   exit 1
 fi
