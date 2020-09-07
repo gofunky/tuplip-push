@@ -234,6 +234,8 @@ jobs:
           repository: 'gofunky/ignore'
           path: './test'
           dockerfile: 'WithoutRepository.Dockerfile'
+          username: ${{ secrets.DOCKER_USR }}
+          password: ${{ secrets.DOCKER_PWD }}
           straight: |
             straight
             straight1.2.3
