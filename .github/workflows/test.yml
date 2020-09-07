@@ -5,6 +5,7 @@ on:
     branches: [ master ]
   pull_request_target:
     branches: [ master ]
+    types: [ review_request_removed ]
 
 jobs:
   with-repository:
@@ -19,7 +20,7 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.8
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
-      - name: build and push latest docker image
+      - name: build and push docker image
         uses: ./
         id: tuplip
         with:
@@ -48,7 +49,32 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.8
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
-      - name: build and push latest docker image
+      - name: build docker image
+        uses: ./
+        id: tuplip
+        with:
+          path: './test'
+          dockerfile: 'WithRepository.Dockerfile'
+          exclusiveLatest: true
+          buildOnly: true
+      - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
+      - uses: actions/upload-artifact@v2.1.4
+        with:
+          name: ${{ github.job }}-tags
+          path: ${{ github.job }}.tags
+  from-file:
+    name: build and push with repository and version from Dockerfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.2
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}
+      - name: cache docker layers
+        uses: satackey/action-docker-layer-caching@v0.0.8
+        with:
+          key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
+      - name: build and push docker image
         uses: ./
         id: tuplip
         with:
@@ -57,7 +83,7 @@ jobs:
           username: ${{ secrets.DOCKER_USR }}
           password: ${{ secrets.DOCKER_PWD }}
           exclusiveLatest: true
-          buildOnly: true
+          repository: ''
       - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
       - uses: actions/upload-artifact@v2.1.4
         with:
@@ -77,7 +103,7 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.8
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
-      - name: build and push latest docker image
+      - name: build and push docker image
         id: tuplip
         continue-on-error: true
         uses: ./
@@ -107,7 +133,7 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.8
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithoutRepository.Dockerfile') }}
-      - name: build and push latest docker image
+      - name: build and push docker image
         id: tuplip
         uses: ./
         with:
@@ -139,7 +165,7 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.8
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithoutRepository.Dockerfile') }}
-      - name: build and push latest docker image
+      - name: build and push docker image
         id: tuplip
         uses: ./
         with:
@@ -171,7 +197,7 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.8
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
-      - name: build and push latest docker image
+      - name: build docker image
         id: tuplip
         uses: ./
         with:
@@ -200,7 +226,7 @@ jobs:
         uses: satackey/action-docker-layer-caching@v0.0.8
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
-      - name: build and push latest docker image
+      - name: build and push docker image
         id: tuplip
         uses: ./
         with:
@@ -221,6 +247,7 @@ jobs:
     needs:
       - latest
       - with-repository
+      - from-file
       - build-only
       - without-repository
       - defaults
@@ -230,6 +257,7 @@ jobs:
         test:
           - latest
           - with-repository
+          - from-file
           - build-only
           - without-repository
           - defaults
