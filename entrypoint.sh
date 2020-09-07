@@ -93,14 +93,16 @@ fi
 if [ -n "$INPUT_BUILDONLY" ]; then
   BUILD_PUSH="tag"
 else
+  echo "Logging into Docker registry..."
   if [ -n "$INPUT_USERNAME" ]; then
     if [ -z "$INPUT_PASSWORD" ]; then
       echo "::error::Input 'password' is not set even though 'username' is!"
       exit 22
     fi
-
-    echo "Logging into Docker registry..."
     echo "$INPUT_PASSWORD" | docker login -u "$INPUT_USERNAME" --password-stdin
+  else
+    # Relogin will succeed if the user authenticated before this action
+    docker login
   fi
 fi
 
