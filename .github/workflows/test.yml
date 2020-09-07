@@ -162,10 +162,10 @@ jobs:
   verify:
     name: verify tags of ${{ matrix.test }}
     runs-on: ubuntu-latest
-    needs: [latest, with-repository, build-only]
+    needs: [latest, with-repository, build-only, without-repository]
     strategy:
       matrix:
-        test: [latest, with-repository, build-only]
+        test: [latest, with-repository, build-only, without-repository]
     steps:
       - uses: actions/checkout@v2.3.2
       - uses: actions/download-artifact@v2.0.5
