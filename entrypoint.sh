@@ -16,7 +16,7 @@ if [ -n "$INPUT_FILTER" ]; then
     if [ -n "$FILTER" ]; then
       FILTER="$FILTER,$arg"
     else
-      FILTER="$FILTER"
+      FILTER="$arg"
     fi
   done
   unset IFS
