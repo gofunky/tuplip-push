@@ -131,8 +131,14 @@ inputs:
       This adds the `--straight` flag to the push command.
       `--straight` lets tuplip use the input tags directly without any mixing.
       Only single-itemed tags will be pushed.
-      This flag will be ignored if inputs.buildOnly is enabled.
-      Set it to any non-zero value to enable the flag (e.g. `true`), `false` also counts as true.
+      Since straight tags won't be mixed, they have to provided directly as input.
+      The tags from the Dockerfile will be ignored.
+      Set it to a comma-separated list of tags to enable the flag (e.g. `some,tag`).
+      A line-separated list is accepted as well: `
+      |
+        some
+        tag
+      `
     required: false
     default: ''
   filter:
@@ -141,8 +147,7 @@ inputs:
       `--filter` excludes all tags without the given set of tag vectors from the output set.
       Only tags will be pushed that represent supersets of the given tags.
       Set it to a comma-separated list of tags (e.g. `some,tag`).
-      Do not use spaces between the given tags (e.g., `some, tag`). Spacings will break the shell processing.
-      Instead, you may use a line-separated list: `
+      A line-separated list is accepted as well: `
       |
         some
         tag

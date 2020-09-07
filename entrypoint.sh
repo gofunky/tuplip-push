@@ -13,6 +13,19 @@ export FILTER=""
 # Parse inputs
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+if [ -n "$INPUT_STRAIGHT" ]; then
+  IFS="
+  "
+  for arg in $INPUT_STRAIGHT; do
+    if [ -n "$STRAIGHT" ]; then
+      STRAIGHT="$STRAIGHT,$arg"
+    else
+      STRAIGHT="$arg"
+    fi
+  done
+  unset IFS
+fi
+
 if [ -n "$INPUT_FILTER" ]; then
   IFS="
   "
@@ -28,10 +41,6 @@ fi
 
 if [ -n "$INPUT_ROOTVERSION" ]; then
   VERSION="$INPUT_ROOTVERSION"
-fi
-
-if [ -n "$INPUT_STRAIGHT" ]; then
-  STRAIGHT="--straight"
 fi
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -119,7 +128,7 @@ else
     IFS="
     "
     for arg in $INPUT_BUILDARGS; do
-      ARGS="$ARGS --build-arg $arg "
+      ARGS="$ARGS --build-arg $arg"
     done
     unset IFS
   fi
@@ -155,12 +164,20 @@ fi
 
 echo "Executing tuplip $BUILD_PUSH..."
 
-TAGS=$( \
-  tuplip $BUILD_PUSH "$SOURCE" ${REPOSITORY:+to "$REPOSITORY"} from file "$INPUT_PATH/$INPUT_DOCKERFILE" \
-  --verbose ${INPUT_EXCLUDEMAJOR:+--exclude-major} ${INPUT_EXCLUDEMINOR:+--exclude-minor} \
-  ${INPUT_EXCLUDEBASE:+--exclude-base} ${INPUT_ADDLATEST:+--add-latest} ${INPUT_EXCLUSIVELATEST:+--exclusive-latest} \
-  $STRAIGHT ${VERSION:+--root-version "$VERSION"} ${FILTER:+--filter "$FILTER"} \
-)
+if [ -n "$STRAIGHT" ]; then
+  TAGS=$( \
+    echo "$STRAIGHT" | tuplip $BUILD_PUSH "$SOURCE" ${REPOSITORY:+to "$REPOSITORY"} from stdin \
+    --verbose --straight --separator="," ${INPUT_ADDLATEST:+--add-latest} ${INPUT_EXCLUSIVELATEST:+--exclusive-latest} \
+    ${VERSION:+--root-version "$VERSION"} \
+  )
+else
+  TAGS=$( \
+    tuplip $BUILD_PUSH "$SOURCE" ${REPOSITORY:+to "$REPOSITORY"} from file "$INPUT_PATH/$INPUT_DOCKERFILE" \
+    --verbose ${INPUT_EXCLUDEMAJOR:+--exclude-major} ${INPUT_EXCLUDEMINOR:+--exclude-minor} \
+    ${INPUT_EXCLUDEBASE:+--exclude-base} ${INPUT_ADDLATEST:+--add-latest} ${INPUT_EXCLUSIVELATEST:+--exclusive-latest} \
+    ${VERSION:+--root-version "$VERSION"} ${FILTER:+--filter "$FILTER"} \
+  )
+fi
 
 STATUS="$?"
 
