@@ -238,7 +238,7 @@ jobs:
           password: ${{ secrets.DOCKER_PWD }}
           straight: |
             straight
-            straight1.2.3
+            straight:1.2.3
       - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
       - uses: actions/upload-artifact@v2.1.4
         with:
