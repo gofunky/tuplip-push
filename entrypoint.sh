@@ -13,19 +13,6 @@ export FILTER=""
 # Parse inputs
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-if [ -n "$INPUT_STRAIGHT" ]; then
-  IFS="
-  "
-  for arg in $INPUT_STRAIGHT; do
-    if [ -n "$STRAIGHT" ]; then
-      STRAIGHT="$STRAIGHT,$arg"
-    else
-      STRAIGHT="$arg"
-    fi
-  done
-  unset IFS
-fi
-
 if [ -n "$INPUT_FILTER" ]; then
   IFS="
   "
