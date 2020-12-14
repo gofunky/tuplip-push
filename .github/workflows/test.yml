@@ -17,7 +17,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
       - name: cache docker layers
-        uses: satackey/action-docker-layer-caching@v0.0.10
+        uses: satackey/action-docker-layer-caching@v0.0.11
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
       - name: build and push docker image
@@ -46,7 +46,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
       - name: cache docker layers
-        uses: satackey/action-docker-layer-caching@v0.0.10
+        uses: satackey/action-docker-layer-caching@v0.0.11
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithoutRepository.Dockerfile') }}
       - name: build docker image
@@ -71,7 +71,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
       - name: cache docker layers
-        uses: satackey/action-docker-layer-caching@v0.0.10
+        uses: satackey/action-docker-layer-caching@v0.0.11
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
       - name: build and push docker image
@@ -100,7 +100,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
       - name: cache docker layers
-        uses: satackey/action-docker-layer-caching@v0.0.10
+        uses: satackey/action-docker-layer-caching@v0.0.11
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
       - name: build and push docker image
@@ -130,7 +130,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
       - name: cache docker layers
-        uses: satackey/action-docker-layer-caching@v0.0.10
+        uses: satackey/action-docker-layer-caching@v0.0.11
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithoutRepository.Dockerfile') }}
       - name: build and push docker image
@@ -162,7 +162,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
       - name: cache docker layers
-        uses: satackey/action-docker-layer-caching@v0.0.10
+        uses: satackey/action-docker-layer-caching@v0.0.11
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithoutRepository.Dockerfile') }}
       - name: build and push docker image
@@ -194,7 +194,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
       - name: cache docker layers
-        uses: satackey/action-docker-layer-caching@v0.0.10
+        uses: satackey/action-docker-layer-caching@v0.0.11
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithRepository.Dockerfile') }}
       - name: build docker image
@@ -223,7 +223,7 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
       - name: cache docker layers
-        uses: satackey/action-docker-layer-caching@v0.0.10
+        uses: satackey/action-docker-layer-caching@v0.0.11
         with:
           key: docker-layers-${{ github.job }}-${{ hashFiles('**/WithoutRepository.Dockerfile') }}
       - name: build and push docker image
