@@ -270,7 +270,7 @@ jobs:
       - uses: actions/download-artifact@v2.0.9
         with:
           name: ${{ matrix.test }}-tags
-      - uses: LouisBrunner/diff-action@v0.1.1
+      - uses: LouisBrunner/diff-action@v0.1.2
         with:
           old: test/${{ matrix.test }}.tags
           new: ${{ matrix.test }}.tags
