@@ -33,7 +33,7 @@ jobs:
           excludeMajor: true
           excludeMinor: true
       - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
-      - uses: actions/upload-artifact@v2.1.4
+      - uses: actions/upload-artifact@v3.0.0
         with:
           name: ${{ github.job }}-tags
           path: ${{ github.job }}.tags
@@ -58,7 +58,7 @@ jobs:
           exclusiveLatest: true
           buildOnly: true
       - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
-      - uses: actions/upload-artifact@v2.1.4
+      - uses: actions/upload-artifact@v3.0.0
         with:
           name: ${{ github.job }}-tags
           path: ${{ github.job }}.tags
@@ -85,7 +85,7 @@ jobs:
           exclusiveLatest: true
           repository: ''
       - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
-      - uses: actions/upload-artifact@v2.1.4
+      - uses: actions/upload-artifact@v3.0.0
         with:
           name: ${{ github.job }}-tags
           path: ${{ github.job }}.tags
@@ -147,7 +147,7 @@ jobs:
           filter: |
             mytag
       - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
-      - uses: actions/upload-artifact@v2.1.4
+      - uses: actions/upload-artifact@v3.0.0
         with:
           name: ${{ github.job }}-tags
           path: ${{ github.job }}.tags
@@ -179,7 +179,7 @@ jobs:
           excludeMajor: true
           excludeMinor: true
       - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
-      - uses: actions/upload-artifact@v2.1.4
+      - uses: actions/upload-artifact@v3.0.0
         with:
           name: ${{ github.job }}-tags
           path: ${{ github.job }}.tags
@@ -208,7 +208,7 @@ jobs:
           dockerfile: 'WithRepository.Dockerfile'
           buildOnly: true
       - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
-      - uses: actions/upload-artifact@v2.1.4
+      - uses: actions/upload-artifact@v3.0.0
         with:
           name: ${{ github.job }}-tags
           path: ${{ github.job }}.tags
@@ -240,7 +240,7 @@ jobs:
             one
             two:1.2.3
       - run: echo "${{ steps.tuplip.outputs.tags }}" | sort > ${{ github.job }}.tags
-      - uses: actions/upload-artifact@v2.1.4
+      - uses: actions/upload-artifact@v3.0.0
         with:
           name: ${{ github.job }}-tags
           path: ${{ github.job }}.tags
