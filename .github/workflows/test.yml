@@ -12,7 +12,7 @@ jobs:
     name: build and push with repository
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v2.7.0
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -41,7 +41,7 @@ jobs:
     name: build and push with default version and repository
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v2.7.0
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -66,7 +66,7 @@ jobs:
     name: build and push with repository and version from Dockerfile
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v2.7.0
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -95,7 +95,7 @@ jobs:
     outputs:
       tags: ${{ steps.tuplip.outputs.tags }}
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v2.7.0
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -125,7 +125,7 @@ jobs:
     outputs:
       tags: ${{ steps.tuplip.outputs.tags }}
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v2.7.0
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -157,7 +157,7 @@ jobs:
     outputs:
       tags: ${{ steps.tuplip.outputs.tags }}
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v2.7.0
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -189,7 +189,7 @@ jobs:
     outputs:
       tags: ${{ steps.tuplip.outputs.tags }}
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v2.7.0
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -218,7 +218,7 @@ jobs:
     outputs:
       tags: ${{ steps.tuplip.outputs.tags }}
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v2.7.0
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.head_ref }}
@@ -266,7 +266,7 @@ jobs:
           - defaults
           - straight
     steps:
-      - uses: actions/checkout@v2.3.5
+      - uses: actions/checkout@v2.7.0
       - uses: actions/download-artifact@v2.0.10
         with:
           name: ${{ matrix.test }}-tags
